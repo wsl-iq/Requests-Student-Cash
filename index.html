@@ -1,0 +1,497 @@
+<!--
+Developer : Mohammed Al-Baqer
+Copyright (C) 2026 lnc
+Requests Student Cash
+HTML5
+-->
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلبات ستودنت كاش - نظام إدارة الحجوزات والمدفوعات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="nav-logo">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div>
+                    <div class="nav-title">طلبات ستودنت كاش</div>
+                    <div class="nav-subtitle">نظام إدارة الحجوزات والمدفوعات</div>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-nav" onclick="openLogModal()">
+                    <i class="fas fa-history"></i>
+                    <span>سجل التغييرات</span>
+                    <span class="badge" id="logCount">0</span>
+                </button>
+                <button class="btn-nav" onclick="openSettingsModal()">
+                    <i class="fas fa-cog"></i>
+                    <span>الإعدادات</span>
+                </button>
+                <button class="btn-nav" onclick="showDeveloperInfo()">
+                    <i class="fas fa-info-circle"></i>
+                    <span>حول النظام</span>
+                </button>
+                <div class="nav-datetime">
+                    <div class="time" id="currentTime">00:00:00</div>
+                    <div id="currentDate">2026-01-01</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-plus-circle"></i> تسجيل حجز جديد</h3>
+                    <p>قم بإدخال بيانات الحجز كاملة للمتابعة</p>
+                </div>
+                <div class="card-body">
+                    <form id="bookingForm" autocomplete="off">
+                        <div class="form-group">
+                            <label><span class="required">*</span> نوع التسجيل</label>
+                            <div class="registration-types">
+                                <label class="reg-type">
+                                    <input type="radio" name="registrationType" value="single" checked onchange="handleTypeChange()">
+                                    <div class="reg-type-content">
+                                        <i class="fas fa-user"></i>
+                                        <span>طالب واحد</span>
+                                    </div>
+                                </label>
+                                <label class="reg-type">
+                                    <input type="radio" name="registrationType" value="double" onchange="handleTypeChange()">
+                                    <div class="reg-type-content">
+                                        <i class="fas fa-user-friends"></i>
+                                        <span>طالبان</span>
+                                    </div>
+                                </label>
+                                <label class="reg-type">
+                                    <input type="radio" name="registrationType" value="group" onchange="handleTypeChange()">
+                                    <div class="reg-type-content">
+                                        <i class="fas fa-users"></i>
+                                        <span>مجموعة</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="sharedInfoSection">
+                            <div class="section-title">
+                                <i class="fas fa-info-circle"></i> معلومات الحجز
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><span class="required">*</span> الكلية</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-icon"><i class="fas fa-university"></i></span>
+                                        <select id="college" class="form-control" style="padding-right: 40px;" required>
+                                            <option value="">اختر الكلية</option>
+                                            <option value="كلية التربية">كلية التربية</option>
+                                            <option value="كلية الآداب">كلية الآداب</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><span class="required">*</span> القسم</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-icon"><i class="fas fa-building"></i></span>
+                                        <input type="text" id="department" class="form-control" placeholder="اسم القسم" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><span class="required">*</span> المرحلة</label>
+                                    <select id="stage" class="form-control" required>
+                                        <option value="">اختر المرحلة</option>
+                                        <option value="الأولى">الأولى</option>
+                                        <option value="الثانية">الثانية</option>
+                                        <option value="الثالثة">الثالثة</option>
+                                        <option value="الرابعة">الرابعة</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>الشعبة / القاعة</label>
+                                    <div class="select-wrapper">
+                                        <select id="classroom" class="form-control">
+                                            <option value="">اختر القاعة</option>
+                                            <option value="A">A</option>
+                                            <option value="B">B</option>
+                                            <option value="C">C</option>
+                                            <option value="D">D</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><span class="required">*</span> نوع الحجز</label>
+                                    <div class="select-wrapper">
+                                        <select id="bookingCategory" class="form-control" required>
+                                            <option value="">اختر نوع الحجز</option>
+                                            <option value="تقرير">تقرير</option>
+                                            <option value="بحث">بحث</option>
+                                            <option value="عرض تقديمي">عرض تقديمي</option>
+                                            <option value="كتاب">كتاب</option>
+                                            <option value="ملزمة">ملزمة</option>
+                                            <option value="بوستر">بوستر</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>ملاحظات إضافية</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-icon"><i class="fas fa-sticky-note"></i></span>
+                                        <input type="text" id="notes" class="form-control" placeholder="ملاحظات إضافية (اختياري)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-title">
+                            <i class="fas fa-user-graduate"></i> الطلاب المسجلين
+                        </div>
+                        <div id="studentsContainer">
+                            <div class="student-card" id="studentCard1">
+                                <div class="student-card-header">
+                                    <h4>الطالب الأول</h4>
+                                    <label class="paid-checkbox">
+                                        <input type="checkbox" class="student-paid" data-student="0" checked>
+                                        <span>مدفوع</span>
+                                    </label>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><span class="required">*</span> اسم الطالب</label>
+                                        <div class="input-wrapper">
+                                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="student-name form-control" placeholder="أدخل اسم الطالب" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>رقم الهاتف</label>
+                                        <div class="input-wrapper">
+                                            <span class="input-icon"><i class="fas fa-phone"></i></span>
+                                            <input type="tel" class="student-phone form-control" placeholder="رقم الهاتف">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-card" id="studentCard2" style="display: none;">
+                                <div class="student-card-header">
+                                    <h4>الطالب الثاني</h4>
+                                    <label class="paid-checkbox">
+                                        <input type="checkbox" class="student-paid" data-student="1">
+                                        <span>مدفوع</span>
+                                    </label>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><span class="required">*</span> اسم الطالب</label>
+                                        <div class="input-wrapper">
+                                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="student-name form-control" placeholder="أدخل اسم الطالب الثاني">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>رقم الهاتف</label>
+                                        <div class="input-wrapper">
+                                            <span class="input-icon"><i class="fas fa-phone"></i></span>
+                                            <input type="tel" class="student-phone form-control" placeholder="رقم الهاتف">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="groupSection" style="display: none;">
+                            <div class="group-controls">
+                                <div class="group-size-control">
+                                    <label>عدد الطلاب في المجموعة:</label>
+                                    <div class="size-input-group">
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="changeGroupSize(-1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" id="groupSize" class="form-control" value="2" min="2" max="14" onchange="updateGroupMembers()">
+                                        <button type="button" class="btn btn-sm btn-secondary" onclick="changeGroupSize(1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="groupMembersContainer"></div>
+                        </div>
+
+                        <div class="study-session-section">
+                            <div class="section-title">
+                                <i class="fas fa-clock"></i> قسم الدراسة
+                            </div>
+                            <div class="form-group">
+                                <label><span class="required">*</span> نوع الدراسة</label>
+                                <div class="study-session-options">
+                                    <label class="study-session-card">
+                                        <input type="radio" name="studySession" value="morning" checked>
+                                        <div class="study-session-content">
+                                            <i class="fas fa-sun"></i>
+                                            <span>صباحي</span>
+                                        </div>
+                                    </label>
+                                    <label class="study-session-card">
+                                        <input type="radio" name="studySession" value="evening">
+                                        <div class="study-session-content">
+                                            <i class="fas fa-moon"></i>
+                                            <span>مسائي</span>
+                                        </div>
+                                    </label>
+                                    <label class="study-session-card">
+                                        <input type="radio" name="studySession" value="hosting">
+                                        <div class="study-session-content">
+                                            <i class="fas fa-home"></i>
+                                            <span>استضافة</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-section">
+                            <div class="section-title">
+                                <i class="fas fa-money-bill-wave"></i> معلومات الدفع
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label><span class="required">*</span> السعر الكلي (دينار عراقي)</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-icon"><i class="fas fa-coins"></i></span>
+                                        <input type="number" id="totalPrice" class="form-control" placeholder="أدخل المبلغ الكلي" min="0" step="1000" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label><span class="required">*</span> المبلغ المدفوع (دينار عراقي)</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-icon"><i class="fas fa-hand-holding-usd"></i></span>
+                                        <input type="number" id="paidAmount" class="form-control" placeholder="المبلغ الذي تم دفعه" min="0" step="1000" value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label><span class="required">*</span> حالة الدفع</label>
+                                <div class="payment-status-options">
+                                    <label class="payment-status-card">
+                                        <input type="radio" name="paymentStatus" value="paid" checked>
+                                        <div class="payment-status-content">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>تم الدفع كاملاً</span>
+                                        </div>
+                                    </label>
+                                    <label class="payment-status-card">
+                                        <input type="radio" name="paymentStatus" value="unpaid">
+                                        <div class="payment-status-content unpaid">
+                                            <i class="fas fa-times-circle"></i>
+                                            <span>لم يتم الدفع</span>
+                                        </div>
+                                    </label>
+                                    <label class="payment-status-card">
+                                        <input type="radio" name="paymentStatus" value="partial">
+                                        <div class="payment-status-content partial">
+                                            <i class="fas fa-adjust"></i>
+                                            <span>تم دفع جزء من المبلغ</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> تسجيل الحجز
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                <i class="fas fa-undo"></i> تفريغ النموذج
+                            </button>
+                            <button type="button" class="btn btn-info" onclick="exportToExcel()">
+                                <i class="fas fa-file-excel"></i> تصدير Excel
+                            </button>
+                            <button type="button" class="btn btn-warning" onclick="openPrintOptions()">
+                                <i class="fas fa-print"></i> طباعة التقرير
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-icon"><i class="fas fa-book"></i></div>
+                    <div class="stat-label">إجمالي الحجوزات</div>
+                    <div class="stat-value" id="statTotalBookings">0</div>
+                    <div class="stat-subtitle">حجز مسجل في النظام</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                    <div class="stat-label">المجموع الكلي</div>
+                    <div class="stat-value" id="statTotalAmount">0</div>
+                    <div class="stat-subtitle">دينار عراقي</div>
+                </div>
+                <div class="stat-box paid-box">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-label">المبالغ المدفوعة</div>
+                    <div class="stat-value" id="statPaidAmount">0</div>
+                    <div class="stat-subtitle">دينار عراقي تم تحصيله</div>
+                </div>
+                <div class="stat-box unpaid-box">
+                    <div class="stat-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="stat-label">المبالغ المتبقية</div>
+                    <div class="stat-value" id="statUnpaidAmount">0</div>
+                    <div class="stat-subtitle">دينار عراقي غير محصل</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <div class="table-header">
+                <h3><i class="fas fa-table"></i> سجل الحجوزات</h3>
+                <div class="filter-section">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-list"></i> الكل
+                    </button>
+                    <button class="filter-btn" data-filter="paid">
+                        <i class="fas fa-check-circle"></i> مدفوع
+                    </button>
+                    <button class="filter-btn" data-filter="unpaid">
+                        <i class="fas fa-times-circle"></i> غير مدفوع
+                    </button>
+                    <button class="filter-btn" data-filter="partial">
+                        <i class="fas fa-adjust"></i> مدفوع جزئياً
+                    </button>
+                    <div class="search-box">
+                        <span class="search-icon"><i class="fas fa-search"></i></span>
+                        <input type="text" class="search-input" id="searchInput" placeholder="بحث باسم الطالب...">
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ت</th>
+                            <th>النوع</th>
+                            <th>الطلاب</th>
+                            <th>الدراسة</th>
+                            <th>نوع الحجز</th>
+                            <th>الكلية</th>
+                            <th>القسم</th>
+                            <th>المرحلة</th>
+                            <th>السعر</th>
+                            <th>المدفوع</th>
+                            <th>المتبقي</th>
+                            <th>الحالة</th>
+                            <th>التاريخ</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr class="empty-state">
+                            <td colspan="14">
+                                <div class="empty-icon"><i class="fas fa-inbox"></i></div>
+                                <p>لا توجد حجوزات مسجلة حتى الآن</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot id="tableFooter"></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="printOptionsModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-print"></i> خيارات الطباعة</h3>
+                <button class="btn-close" onclick="closePrintOptions()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <button class="btn btn-primary" onclick="printReport('all')" style="width:100%;">
+                        <i class="fas fa-list"></i> طباعة الكل
+                    </button>
+                    <button class="btn btn-success" onclick="printReport('paid')" style="width:100%;">
+                        <i class="fas fa-check-circle"></i> طباعة المدفوع فقط
+                    </button>
+                    <button class="btn btn-danger" onclick="printReport('unpaid')" style="width:100%;">
+                        <i class="fas fa-times-circle"></i> طباعة غير المدفوع فقط
+                    </button>
+                    <button class="btn btn-warning" onclick="printReport('partial')" style="width:100%;">
+                        <i class="fas fa-adjust"></i> طباعة المدفوع جزئياً فقط
+                    </button>
+                    <hr style="border-color: var(--border); margin: 5px 0;">
+                    <button class="btn btn-info" onclick="printReport('filtered')" style="width:100%;">
+                        <i class="fas fa-filter"></i> طباعة حسب الفلتر الحالي
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="logModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-history"></i> سجل التغييرات</h3>
+                <div class="modal-actions">
+                    <button class="btn btn-sm btn-danger" onclick="clearLogs()">
+                        <i class="fas fa-trash"></i> مسح
+                    </button>
+                    <button class="btn btn-sm btn-info" onclick="exportLogsToJson()">
+                        <i class="fas fa-download"></i> تصدير
+                    </button>
+                    <button class="btn-close" onclick="closeLogModal()">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body" id="logList">
+                <div class="empty-logs">
+                    <i class="fas fa-clipboard-list"></i>
+                    <p>لا توجد سجلات</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> الإعدادات</h3>
+                <button class="btn-close" onclick="closeSettingsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="settingsContent"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="developerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> حول النظام</h3>
+                <button class="btn-close" onclick="closeDeveloperInfo()">&times;</button>
+            </div>
+            <div class="modal-body" id="developerContent"></div>
+        </div>
+    </div>
+
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <script src="setting.js"></script>
+    <script src="log.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
