@@ -922,28 +922,100 @@ function generatePrintContent(data, title) {
     let totalPaid = 0;
     let totalStudents = 0;
     
-    data.forEach((b, i) => {
-        const studentsNames = b.students.map(s => 
-            s.name + (s.isGroupLeader ? ' (قائد)' : '') + (s.paid ? ' ✓' : ' ✗')
-        ).join('، ');
+    let maxStudentsLength = 0;
+    let maxCollegeLength = 0;
+    let maxDeptLength = 0;
+    let maxCategoryLength = 0;
+    let maxStageLength = 0;
+    let maxDateLength = 0;
+    
+    data.forEach(function(b) {
+        let studentsText = '';
+        b.students.forEach(function(s) {
+            let name = s.name || '';
+            if (s.isGroupLeader) {
+                name = name + ' (مسؤول)';
+            }
+            const mark = s.paid ? '✓' : '✗';
+            name = mark + ' ' + name;
+            studentsText += name + ' ';
+        });
+        if (studentsText.length > maxStudentsLength) {
+            maxStudentsLength = studentsText.length;
+        }
         
+        if ((b.college || '').length > maxCollegeLength) {
+            maxCollegeLength = (b.college || '').length;
+        }
+        if ((b.department || '').length > maxDeptLength) {
+            maxDeptLength = (b.department || '').length;
+        }
+        if ((b.bookingCategory || '').length > maxCategoryLength) {
+            maxCategoryLength = (b.bookingCategory || '').length;
+        }
+        if ((b.stage || '').length > maxStageLength) {
+            maxStageLength = (b.stage || '').length;
+        }
+        if ((b.dateFormatted || '').length > maxDateLength) {
+            maxDateLength = (b.dateFormatted || '').length;
+        }
+    });
+    
+    const totalChars = maxStudentsLength + maxCollegeLength + maxDeptLength + 
+                       maxCategoryLength + maxStageLength + maxDateLength + 50;
+    
+    let studentsPercent = Math.max(18, Math.min(28, (maxStudentsLength / totalChars) * 100));
+    let collegePercent = Math.max(6, Math.min(12, (maxCollegeLength / totalChars) * 100));
+    let deptPercent = Math.max(6, Math.min(12, (maxDeptLength / totalChars) * 100));
+    let categoryPercent = Math.max(5, Math.min(10, (maxCategoryLength / totalChars) * 100));
+    let stagePercent = Math.max(4, Math.min(8, (maxStageLength / totalChars) * 100));
+    let datePercent = Math.max(7, Math.min(12, (maxDateLength / totalChars) * 100));
+    
+    const fixedColumnsWidth = 22 + 38 + 38 + 42 + 42 + 42 + 42;
+    const totalFixedPercent = (fixedColumnsWidth / 900) * 100;
+    const totalDynamicPercent = studentsPercent + collegePercent + deptPercent + categoryPercent + stagePercent + datePercent;
+    
+    const maxDynamicPercent = 100 - totalFixedPercent - 5; 
+    if (totalDynamicPercent > maxDynamicPercent) {
+        const scaleFactor = maxDynamicPercent / totalDynamicPercent;
+        studentsPercent = studentsPercent * scaleFactor;
+        collegePercent = collegePercent * scaleFactor;
+        deptPercent = deptPercent * scaleFactor;
+        categoryPercent = categoryPercent * scaleFactor;
+        stagePercent = stagePercent * scaleFactor;
+        datePercent = datePercent * scaleFactor;
+    }
+    
+    data.forEach(function(b, i) {
+        let studentsList = [];
+        b.students.forEach(function(s) {
+            let name = s.name || '';
+            if (s.isGroupLeader) {
+                name = name + ' (مسؤول)';
+            }
+            const mark = s.paid ? '✓' : '✗';
+            name = mark + ' ' + name;
+            studentsList.push(name);
+        });
+        
+        const studentsNames = studentsList.join('<br>');
         const studyText = studyTexts[b.studySession] || 'صباحي';
         
         rowsHtml += `
             <tr>
                 <td>${i + 1}</td>
                 <td>${typeTexts[b.type] || ''}</td>
-                <td>${studentsNames}</td>
+                <td class="students-cell">${studentsNames}</td>
                 <td>${studyText}</td>
                 <td>${b.bookingCategory || '-'}</td>
-                <td>${b.college || ''}</td>
-                <td>${b.department || ''}</td>
+                <td class="college-cell">${b.college || ''}</td>
+                <td class="dept-cell">${b.department || ''}</td>
                 <td>${b.stage || ''}</td>
-                <td style="text-align:left;">${b.totalPrice.toLocaleString('ar-IQ')}</td>
-                <td style="text-align:left;">${b.paidAmount.toLocaleString('ar-IQ')}</td>
-                <td style="text-align:left;">${b.remainingAmount.toLocaleString('ar-IQ')}</td>
-                <td>${statusTexts[b.paymentStatus] || ''}</td>
-                <td>${b.dateFormatted || ''}</td>
+                <td class="amount-cell">${b.totalPrice.toLocaleString('ar-IQ')}</td>
+                <td class="amount-cell">${b.paidAmount.toLocaleString('ar-IQ')}</td>
+                <td class="amount-cell remaining">${b.remainingAmount.toLocaleString('ar-IQ')}</td>
+                <td><span class="status-badge ${b.paymentStatus}">${statusTexts[b.paymentStatus] || ''}</span></td>
+                <td class="date-cell">${b.dateFormatted || ''}</td>
             </tr>
         `;
         
@@ -967,92 +1039,243 @@ function generatePrintContent(data, title) {
                 padding: 0;
                 box-sizing: border-box;
             }
+            
             body {
                 font-family: 'Cairo', 'Arial', sans-serif;
-                padding: 30px;
+                padding: 6px 4px;
                 color: #1a1a2e;
                 background: white;
-                font-size: 13px;
+                font-size: 8.5px;
+                direction: rtl;
             }
+            
             .print-header {
                 text-align: center;
-                padding: 20px 0;
-                border-bottom: 3px solid #1a237e;
-                margin-bottom: 25px;
+                padding: 5px 0;
+                border-bottom: 2px solid #1a237e;
+                margin-bottom: 6px;
             }
             .print-header h1 {
                 color: #1a237e;
-                font-size: 26px;
-                margin-bottom: 5px;
+                font-size: 14px;
+                margin-bottom: 1px;
             }
             .print-header h1 i {
                 color: #c6a700;
-                margin-left: 10px;
+                margin-left: 4px;
             }
             .print-header .subtitle {
                 color: #555;
-                font-size: 14px;
+                font-size: 8.5px;
             }
             .print-header .datetime {
                 color: #777;
-                font-size: 13px;
-                margin-top: 5px;
+                font-size: 8px;
+                margin-top: 2px;
             }
             .print-header .datetime i {
-                margin-left: 5px;
+                margin-left: 3px;
             }
+            
             .print-title {
                 text-align: center;
-                font-size: 20px;
+                font-size: 11px;
                 font-weight: 700;
                 color: #1a237e;
-                margin: 20px 0;
-                padding: 10px;
+                margin: 5px 0 6px;
+                padding: 4px;
                 background: #f0f4ff;
-                border-radius: 8px;
+                border-radius: 4px;
             }
             .print-title i {
-                margin-left: 10px;
+                margin-left: 4px;
                 color: #c6a700;
             }
+            
             table {
                 width: 100%;
                 border-collapse: collapse;
-                margin-top: 15px;
-                font-size: 12px;
+                font-size: 8px;
+                direction: rtl;
+                table-layout: auto;
             }
+            
             th {
                 background: #1a237e;
                 color: white;
-                padding: 10px 6px;
+                padding: 3px 3px;
                 font-weight: 700;
                 text-align: center;
                 border: 1px solid #1a237e;
+                font-size: 7.5px;
+                white-space: nowrap;
             }
+            
             td {
-                padding: 8px 6px;
+                padding: 2px 3px;
                 border: 1px solid #ddd;
                 text-align: center;
                 vertical-align: middle;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                font-size: 8px;
             }
+            
+            th:nth-child(1), td:nth-child(1) { 
+                width: 20px; 
+                min-width: 18px; 
+                max-width: 25px; 
+            }
+            
+            th:nth-child(2), td:nth-child(2) { 
+                width: 32px; 
+                min-width: 30px; 
+                max-width: 40px; 
+            }
+            
+            th:nth-child(3), td:nth-child(3) { 
+                width: ${Math.min(studentsPercent, 25)}%; 
+                min-width: 100px; 
+                max-width: 200px; 
+            }
+            
+            th:nth-child(4), td:nth-child(4) { 
+                width: 32px; 
+                min-width: 30px; 
+                max-width: 40px; 
+            }
+            
+            th:nth-child(5), td:nth-child(5) { 
+                width: ${Math.min(categoryPercent, 8)}%; 
+                min-width: 35px; 
+                max-width: 60px; 
+            }
+            
+            th:nth-child(6), td:nth-child(6) { 
+                width: ${Math.min(collegePercent, 10)}%; 
+                min-width: 40px; 
+                max-width: 75px; 
+            }
+            
+            th:nth-child(7), td:nth-child(7) { 
+                width: ${Math.min(deptPercent, 10)}%; 
+                min-width: 40px; 
+                max-width: 75px; 
+            }
+            
+            th:nth-child(8), td:nth-child(8) { 
+                width: ${Math.min(stagePercent, 6)}%; 
+                min-width: 28px; 
+                max-width: 42px; 
+            }
+            
+            th:nth-child(9), td:nth-child(9) { 
+                width: 38px; 
+                min-width: 35px; 
+                max-width: 45px; 
+            }
+            
+            th:nth-child(10), td:nth-child(10) { 
+                width: 38px; 
+                min-width: 35px; 
+                max-width: 45px; 
+            }
+            
+            th:nth-child(11), td:nth-child(11) { 
+                width: 38px; 
+                min-width: 35px; 
+                max-width: 45px; 
+            }
+            
+            th:nth-child(12), td:nth-child(12) { 
+                width: 38px; 
+                min-width: 35px; 
+                max-width: 48px; 
+            }
+            
+            th:nth-child(13), td:nth-child(13) { 
+                width: ${Math.min(datePercent, 10)}%; 
+                min-width: 50px; 
+                max-width: 80px; 
+            }
+            
+            td.students-cell {
+                text-align: right !important;
+                direction: ltr !important;
+                font-size: 8.5px !important;
+                line-height: 1.7 !important;
+                padding: 2px 6px !important;
+                font-weight: 600;
+                color: #1a1a2e;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                white-space: normal;
+            }
+            
+            td.students-cell br {
+                display: block;
+                content: "";
+                margin: 0px 0;
+            }
+            
+            td.amount-cell {
+                font-weight: 600;
+                font-size: 8px;
+                text-align: left !important;
+                direction: ltr !important;
+                white-space: nowrap;
+                padding-left: 3px !important;
+            }
+            
+            td.remaining {
+                color: #c62828;
+                font-weight: 700;
+            }
+            
+            td.date-cell {
+                font-size: 7.5px !important;
+                line-height: 1.2 !important;
+                white-space: normal !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                padding: 2px 3px !important;
+            }
+            
+            td.college-cell, td.dept-cell {
+                font-size: 7.5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+                        
             tr:nth-child(even) {
                 background: #f8f9fa;
             }
-            tr:hover {
-                background: #e8edf5;
+            
+            .status-badge {
+                display: inline-block;
+                padding: 1px 4px;
+                border-radius: 8px;
+                font-size: 6.5px;
+                font-weight: 700;
+                white-space: nowrap;
             }
-            .print-footer {
-                margin-top: 25px;
-                padding-top: 15px;
-                border-top: 2px solid #ddd;
-                display: flex;
-                justify-content: space-between;
-                font-size: 13px;
-                color: #555;
+            .status-badge.paid {
+                background: #e8f5e9;
+                color: #2e7d32;
+                border: 1px solid #a5d6a7;
             }
-            .print-footer i {
-                margin-left: 5px;
+            .status-badge.unpaid {
+                background: #fce4ec;
+                color: #c62828;
+                border: 1px solid #ef9a9a;
             }
+            .status-badge.partial {
+                background: #fff3e0;
+                color: #e65100;
+                border: 1px solid #ffcc80;
+            }
+            
             .total-row {
                 background: #f0f4ff !important;
                 font-weight: 700;
@@ -1060,16 +1283,130 @@ function generatePrintContent(data, title) {
             .total-row td {
                 border-color: #1a237e;
                 border-top: 2px solid #1a237e;
+                padding: 3px 3px;
+                font-size: 8px;
             }
-            .status-paid { color: #2e7d32; }
-            .status-unpaid { color: #c62828; }
-            .status-partial { color: #e65100; }
             
+            .print-footer {
+                margin-top: 6px;
+                padding-top: 5px;
+                border-top: 2px solid #ddd;
+                display: flex;
+                justify-content: space-between;
+                font-size: 7.5px;
+                color: #555;
+            }
+            .print-footer i {
+                margin-left: 3px;
+            }
+
             @media print {
-                body { padding: 15px; font-size: 11px; }
-                .no-print { display: none; }
-                th { background: #1a237e !important; color: white !important; }
-                tr:nth-child(even) { background: #f5f5f5 !important; }
+                body {
+                    padding: 3px 2px;
+                    font-size: 7px;
+                }
+                .no-print {
+                    display: none;
+                }
+                th {
+                    background: #1a237e !important;
+                    color: white !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                tr:nth-child(even) {
+                    background: #f5f5f5 !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                .total-row {
+                    background: #f0f4ff !important;
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                .status-badge {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                }
+                td.students-cell {
+                    font-size: 7.5px !important;
+                    line-height: 1.5 !important;
+                }
+                .print-header h1 {
+                    font-size: 12px;
+                }
+                .print-title {
+                    font-size: 9px;
+                    padding: 3px;
+                }
+                th {
+                    font-size: 6.5px !important;
+                    padding: 2px 2px !important;
+                }
+                td {
+                    font-size: 7px !important;
+                    padding: 1.5px 2px !important;
+                }
+                td.amount-cell {
+                    font-size: 7px !important;
+                }
+                td.date-cell {
+                    font-size: 6.5px !important;
+                }
+                .status-badge {
+                    font-size: 5.5px !important;
+                    padding: 1px 3px !important;
+                }
+                .print-footer {
+                    font-size: 6.5px !important;
+                }
+                .total-row td {
+                    font-size: 7px !important;
+                }
+                tr {
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
+                th:nth-child(3), td:nth-child(3) { max-width: 160px; }
+                th:nth-child(6), td:nth-child(6) { max-width: 60px; }
+                th:nth-child(7), td:nth-child(7) { max-width: 60px; }
+                th:nth-child(13), td:nth-child(13) { max-width: 65px; }
+            }
+            
+            @page {
+                size: A4 portrait;
+                margin: 3mm 2mm;
+            }
+            
+            @media screen and (max-width: 900px) {
+                body {
+                    padding: 3px 2px;
+                    font-size: 6.5px;
+                }
+                th, td {
+                    font-size: 6px;
+                    padding: 1.5px 1.5px;
+                }
+                td.students-cell {
+                    font-size: 6.5px !important;
+                    line-height: 1.3 !important;
+                }
+                td.amount-cell {
+                    font-size: 6px !important;
+                }
+                td.date-cell {
+                    font-size: 5.5px !important;
+                }
+                .status-badge {
+                    font-size: 5px;
+                    padding: 1px 2px;
+                }
+                .print-header h1 {
+                    font-size: 11px;
+                }
+                .print-title {
+                    font-size: 8px;
+                }
             }
         </style>
     </head>
@@ -1085,7 +1422,7 @@ function generatePrintContent(data, title) {
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th>ت</th>
                     <th>النوع</th>
                     <th>الطلاب</th>
                     <th>الدراسة</th>
@@ -1103,14 +1440,14 @@ function generatePrintContent(data, title) {
             <tbody>
                 ${rowsHtml}
                 <tr class="total-row">
-                    <td colspan="7" style="text-align:left; font-size:14px;">
+                    <td colspan="7" style="text-align: right; font-size: 8px; padding-right: 4px;">
                         <strong><i class="fas fa-calculator"></i> المجموع (${data.length} حجز — ${totalStudents} طالب)</strong>
                     </td>
-                    <td></td>
-                    <td style="text-align:left;"><strong>${totalAll.toLocaleString('ar-IQ')}</strong></td>
-                    <td style="text-align:left;"><strong>${totalPaid.toLocaleString('ar-IQ')}</strong></td>
-                    <td style="text-align:left; color: ${totalRemaining > 0 ? '#c62828' : '#2e7d32'};">
-                        <strong>${totalRemaining.toLocaleString('ar-IQ')}</strong>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: left; font-weight: 700; direction: ltr; font-size: 7.5px;">${totalAll.toLocaleString('ar-IQ')}</td>
+                    <td style="text-align: left; font-weight: 700; direction: ltr; font-size: 7.5px;">${totalPaid.toLocaleString('ar-IQ')}</td>
+                    <td style="text-align: left; font-weight: 700; color: ${totalRemaining > 0 ? '#c62828' : '#2e7d32'}; direction: ltr; font-size: 7.5px;">
+                        ${totalRemaining.toLocaleString('ar-IQ')}
                     </td>
                     <td colspan="2"></td>
                 </tr>
@@ -1118,7 +1455,7 @@ function generatePrintContent(data, title) {
         </table>
         
         <div class="print-footer">
-            <span><i class="fas fa-code"></i> Mohammed Al-Baqer Copyright (C) 2026, Inc </span><br>
+            <span><i class="fas fa-code"></i> Mohammed Al-Baqer Copyright (C) 2026, lnc</span>
             <span><i class="fas fa-file-alt"></i> عدد الحجوزات: ${data.length} | <i class="fas fa-users"></i> إجمالي الطلاب: ${totalStudents}</span>
         </div>
     </body>
