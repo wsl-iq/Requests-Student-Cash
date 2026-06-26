@@ -1396,10 +1396,6 @@ body.dark-mode td .study-badge.hosting {
     }
 }
 
-/* ==========================================
-   زر طباعة الحجز الفردي
-   ========================================== */
-
 .btn-icon.btn-print {
     background: #e8f5e9;
     color: #2e7d32;
@@ -1412,7 +1408,6 @@ body.dark-mode td .study-badge.hosting {
     transform: scale(1.1);
 }
 
-/* تنسيق زر الطباعة في الوضع الداكن */
 body.dark-mode .btn-icon.btn-print {
     background: #1a3a1a;
     color: #81c784;
@@ -1423,10 +1418,6 @@ body.dark-mode .btn-icon.btn-print:hover {
     background: #2e7d32;
     color: white;
 }
-
-/* ==========================================
-   زر طباعة الحجز الفردي
-   ========================================== */
 
 .btn-icon.btn-print {
     background: #e8f5e9;
@@ -1443,7 +1434,6 @@ body.dark-mode .btn-icon.btn-print:hover {
     transform: scale(1.1);
 }
 
-/* تنسيق زر الطباعة في الوضع الداكن */
 body.dark-mode .btn-icon.btn-print {
     background: #1a3a1a;
     color: #81c784;
@@ -1455,7 +1445,6 @@ body.dark-mode .btn-icon.btn-print:hover {
     color: white;
 }
 
-/* تنسيق عمود الهاتف في الجدول */
 td .phone-number {
     direction: ltr;
     text-align: left;
