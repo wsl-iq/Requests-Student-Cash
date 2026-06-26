@@ -7,7 +7,7 @@ window.bookings = window.bookings || [];
 let currentFilter = 'all';
 let searchQuery = '';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     loadBookings();
     setupListeners();
     renderTable();
@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function loadBookings() {
     try {
-        const data = localStorage.getItem('bookings');
+        var data = localStorage.getItem('bookings');
         if (data) {
-            const parsed = JSON.parse(data);
+            var parsed = JSON.parse(data);
             window.bookings = Array.isArray(parsed) ? parsed : [];
         }
     } catch(e) { 
@@ -38,16 +38,16 @@ function saveBookings() {
 }
 
 function handleTypeChange() {
-    const typeElement = document.querySelector('input[name="registrationType"]:checked');
+    var typeElement = document.querySelector('input[name="registrationType"]:checked');
     if (!typeElement) return;
     
-    const type = typeElement.value;
+    var type = typeElement.value;
     
     document.getElementById('studentCard1').style.display = 'block';
     document.getElementById('studentCard2').style.display = (type === 'double') ? 'block' : 'none';
     document.getElementById('groupSection').style.display = (type === 'group') ? 'block' : 'none';
     
-    const header1 = document.getElementById('studentCard1')?.querySelector('h4');
+    var header1 = document.getElementById('studentCard1')?.querySelector('h4');
     if (header1) {
         if (type === 'single') {
             header1.innerHTML = '<i class="fas fa-user-graduate"></i> الطالب';
@@ -58,13 +58,13 @@ function handleTypeChange() {
         }
     }
     
-    const header2 = document.getElementById('studentCard2')?.querySelector('h4');
+    var header2 = document.getElementById('studentCard2')?.querySelector('h4');
     if (header2) {
         header2.innerHTML = '<i class="fas fa-user-graduate"></i> الطالب الثاني';
     }
     
     if (type === 'group') {
-        const currentSize = document.querySelectorAll('.group-member-item').length;
+        var currentSize = document.querySelectorAll('.group-member-item').length;
         if (currentSize === 0) {
             document.getElementById('groupSize').value = 2;
             updateGroupMembers();
@@ -73,27 +73,27 @@ function handleTypeChange() {
 }
 
 function changeGroupSize(delta) {
-    const input = document.getElementById('groupSize');
+    var input = document.getElementById('groupSize');
     if (!input) return;
     
-    let size = parseInt(input.value) || 2;
+    var size = parseInt(input.value) || 2;
     size = Math.max(2, Math.min(14, size + delta));
     input.value = size;
     updateGroupMembers();
 }
 
 function updateGroupMembers() {
-    const container = document.getElementById('groupMembersContainer');
-    const sizeInput = document.getElementById('groupSize');
+    var container = document.getElementById('groupMembersContainer');
+    var sizeInput = document.getElementById('groupSize');
     
     if (!container || !sizeInput) return;
     
-    const size = parseInt(sizeInput.value) || 2;
-    const validSize = Math.max(2, Math.min(14, size));
+    var size = parseInt(sizeInput.value) || 2;
+    var validSize = Math.max(2, Math.min(14, size));
     sizeInput.value = validSize;
     
-    let html = '';
-    for (let i = 2; i <= validSize + 1; i++) {
+    var html = '';
+    for (var i = 2; i <= validSize + 1; i++) {
         html += `
             <div class="group-member-item" data-member-index="${i}">
                 <span class="member-number">${i}</span>
@@ -124,14 +124,14 @@ function updateGroupMembers() {
 }
 
 function collectStudentsData(type) {
-    let students = [];
+    var students = [];
     
     if (type === 'single') {
-        const nameInput = document.querySelector('#studentCard1 .student-name');
-        const phoneInput = document.querySelector('#studentCard1 .student-phone');
-        const paidCheck = document.querySelector('#studentCard1 .student-paid');
+        var nameInput = document.querySelector('#studentCard1 .student-name');
+        var phoneInput = document.querySelector('#studentCard1 .student-phone');
+        var paidCheck = document.querySelector('#studentCard1 .student-paid');
         
-        const name = nameInput ? nameInput.value.trim() : '';
+        var name = nameInput ? nameInput.value.trim() : '';
         
         if (!name) {
             showNotification('الرجاء إدخال اسم الطالب', 'error');
@@ -146,16 +146,16 @@ function collectStudentsData(type) {
         });
         
     } else if (type === 'double') {
-        const card1Name = document.querySelector('#studentCard1 .student-name');
-        const card1Phone = document.querySelector('#studentCard1 .student-phone');
-        const card1Paid = document.querySelector('#studentCard1 .student-paid');
+        var card1Name = document.querySelector('#studentCard1 .student-name');
+        var card1Phone = document.querySelector('#studentCard1 .student-phone');
+        var card1Paid = document.querySelector('#studentCard1 .student-paid');
         
-        const card2Name = document.querySelector('#studentCard2 .student-name');
-        const card2Phone = document.querySelector('#studentCard2 .student-phone');
-        const card2Paid = document.querySelector('#studentCard2 .student-paid');
+        var card2Name = document.querySelector('#studentCard2 .student-name');
+        var card2Phone = document.querySelector('#studentCard2 .student-phone');
+        var card2Paid = document.querySelector('#studentCard2 .student-paid');
         
-        const name1 = card1Name ? card1Name.value.trim() : '';
-        const name2 = card2Name ? card2Name.value.trim() : '';
+        var name1 = card1Name ? card1Name.value.trim() : '';
+        var name2 = card2Name ? card2Name.value.trim() : '';
         
         if (!name1) {
             showNotification('الرجاء إدخال اسم الطالب الأول', 'error');
@@ -179,11 +179,11 @@ function collectStudentsData(type) {
         }
         
     } else if (type === 'group') {
-        const leaderName = document.querySelector('#studentCard1 .student-name');
-        const leaderPhone = document.querySelector('#studentCard1 .student-phone');
-        const leaderPaid = document.querySelector('#studentCard1 .student-paid');
+        var leaderName = document.querySelector('#studentCard1 .student-name');
+        var leaderPhone = document.querySelector('#studentCard1 .student-phone');
+        var leaderPaid = document.querySelector('#studentCard1 .student-paid');
         
-        const name1 = leaderName ? leaderName.value.trim() : '';
+        var name1 = leaderName ? leaderName.value.trim() : '';
         
         if (!name1) {
             showNotification('الرجاء إدخال اسم قائد المجموعة (الطالب الأول)', 'error');
@@ -197,15 +197,15 @@ function collectStudentsData(type) {
             isGroupLeader: true
         });
         
-        const memberItems = document.querySelectorAll('.group-member-item');
-        let hasAnyMember = false;
+        var memberItems = document.querySelectorAll('.group-member-item');
+        var hasAnyMember = false;
         
-        memberItems.forEach((item) => {
-            const nameInput = item.querySelector('.member-name');
-            const phoneInput = item.querySelector('.member-phone-input');
-            const paidCheck = item.querySelector('.member-paid');
+        memberItems.forEach(function(item) {
+            var nameInput = item.querySelector('.member-name');
+            var phoneInput = item.querySelector('.member-phone-input');
+            var paidCheck = item.querySelector('.member-paid');
             
-            const name = nameInput ? nameInput.value.trim() : '';
+            var name = nameInput ? nameInput.value.trim() : '';
             
             if (name) {
                 students.push({
@@ -228,7 +228,7 @@ function collectStudentsData(type) {
 }
 
 function highlightField(fieldId) {
-    const field = document.getElementById(fieldId);
+    var field = document.getElementById(fieldId);
     if (!field) return;
     
     if (field.tagName === 'SELECT') {
@@ -240,7 +240,7 @@ function highlightField(fieldId) {
     
     field.focus();
     
-    setTimeout(() => {
+    setTimeout(function() {
         field.style.borderColor = '';
         field.style.boxShadow = '';
     }, 2000);
@@ -249,23 +249,23 @@ function highlightField(fieldId) {
 function handleSubmit(e) {
     e.preventDefault();
     
-    const college = document.getElementById('college')?.value.trim() || '';
-    const department = document.getElementById('department')?.value.trim() || '';
-    const stage = document.getElementById('stage')?.value || '';
-    const classroom = document.getElementById('classroom')?.value.trim() || '';
-    const bookingCategory = document.getElementById('bookingCategory')?.value || '';
-    const notes = document.getElementById('notes')?.value.trim() || '';
-    const totalPrice = parseFloat(document.getElementById('totalPrice')?.value) || 0;
-    let paidAmount = parseFloat(document.getElementById('paidAmount')?.value) || 0;
+    var college = document.getElementById('college')?.value.trim() || '';
+    var department = document.getElementById('department')?.value.trim() || '';
+    var stage = document.getElementById('stage')?.value || '';
+    var classroom = document.getElementById('classroom')?.value.trim() || '';
+    var bookingCategory = document.getElementById('bookingCategory')?.value || '';
+    var notes = document.getElementById('notes')?.value.trim() || '';
+    var totalPrice = parseFloat(document.getElementById('totalPrice')?.value) || 0;
+    var paidAmount = parseFloat(document.getElementById('paidAmount')?.value) || 0;
     
-    const studySession = document.querySelector('input[name="studySession"]:checked')?.value || 'morning';
+    var studySession = document.querySelector('input[name="studySession"]:checked')?.value || 'morning';
     
-    const typeElement = document.querySelector('input[name="registrationType"]:checked');
+    var typeElement = document.querySelector('input[name="registrationType"]:checked');
     if (!typeElement) {
         showNotification('الرجاء اختيار نوع التسجيل', 'error');
         return;
     }
-    const type = typeElement.value;
+    var type = typeElement.value;
     
     if (!college || !department || !stage) {
         showNotification('الرجاء إدخال جميع معلومات الحجز', 'error');
@@ -283,15 +283,15 @@ function handleSubmit(e) {
         return;
     }
     
-    const students = collectStudentsData(type);
+    var students = collectStudentsData(type);
     if (!students || students.length === 0) {
         return;
     }
     
-    const paidCount = students.filter(s => s.paid).length;
-    const totalStudents = students.length;
+    var paidCount = students.filter(function(s) { return s.paid; }).length;
+    var totalStudents = students.length;
     
-    let paymentStatus;
+    var paymentStatus;
     if (paidAmount >= totalPrice) {
         paymentStatus = 'paid';
         paidAmount = totalPrice;
@@ -302,9 +302,9 @@ function handleSubmit(e) {
         paidAmount = 0;
     }
     
-    const remainingAmount = totalPrice - paidAmount;
+    var remainingAmount = totalPrice - paidAmount;
     
-    const booking = {
+    var booking = {
         id: 'BK' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
         type: type,
         students: students,
@@ -338,9 +338,9 @@ function handleSubmit(e) {
     saveBookings();
     
     if (typeof addLog === 'function') {
-        const typeText = type === 'single' ? 'طالب' : type === 'double' ? 'طالبان' : 'مجموعة';
+        var typeText = type === 'single' ? 'طالب' : type === 'double' ? 'طالبان' : 'مجموعة';
         addLog('add', 'إضافة حجز', 
-            `تم إضافة ${typeText}: ${students.map(s => s.name).join('، ')} | ${college} | ${bookingCategory} | ${formatCurrency(totalPrice)}`, 
+            'تم إضافة ' + typeText + ': ' + students.map(function(s) { return s.name; }).join('، ') + ' | ' + college + ' | ' + bookingCategory + ' | ' + formatCurrency(totalPrice), 
             booking
         );
     }
@@ -349,35 +349,35 @@ function handleSubmit(e) {
     updateStats();
     resetForm();
     
-    const typeText = type === 'single' ? 'طالب' : type === 'double' ? 'طالبان' : 'مجموعة';
-    showNotification(`تم تسجيل ${typeText}: ${students.map(s => s.name).join('، ')} بنجاح`, 'success');
+    var typeText = type === 'single' ? 'طالب' : type === 'double' ? 'طالبان' : 'مجموعة';
+    showNotification('تم تسجيل ' + typeText + ': ' + students.map(function(s) { return s.name; }).join('، ') + ' بنجاح', 'success');
 }
 
 function renderTable() {
-    const tbody = document.getElementById('tableBody');
-    const tfoot = document.getElementById('tableFooter');
+    var tbody = document.getElementById('tableBody');
+    var tfoot = document.getElementById('tableFooter');
     
     if (!tbody || !tfoot) return;
     
-    let filtered = [...window.bookings];
+    var filtered = window.bookings.slice();
     
     if (currentFilter !== 'all') {
-        filtered = filtered.filter(b => b.paymentStatus === currentFilter);
+        filtered = filtered.filter(function(b) { return b.paymentStatus === currentFilter; });
     }
     
     if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        filtered = filtered.filter(b => 
-            b.students && b.students.some(s => s.name && s.name.toLowerCase().includes(query))
-        );
+        var query = searchQuery.toLowerCase();
+        filtered = filtered.filter(function(b) {
+            return b.students && b.students.some(function(s) { return s.name && s.name.toLowerCase().includes(query); });
+        });
     }
     
-    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+    filtered.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
     
     if (!filtered.length) {
         tbody.innerHTML = `
             <tr class="empty-state">
-                <td colspan="14">
+                <td colspan="18">
                     <div class="empty-icon"><i class="fas fa-inbox"></i></div>
                     <p>${searchQuery ? 'لا توجد نتائج مطابقة للبحث' : 'لا توجد حجوزات مسجلة حتى الآن'}</p>
                 </td>
@@ -387,84 +387,103 @@ function renderTable() {
         return;
     }
     
-    const typeIcons = { single: 'fa-user', double: 'fa-user-friends', group: 'fa-users' };
-    const typeTexts = { single: 'طالب', double: 'طالبان', group: 'مجموعة' };
-    const categoryIcons = {
+    var typeIcons = { single: 'fa-user', double: 'fa-user-friends', group: 'fa-users' };
+    var typeTexts = { single: 'طالب', double: 'طالبان', group: 'مجموعة' };
+    var categoryIcons = {
         'تقرير': 'fa-file-alt',
         'بحث': 'fa-search',
         'عرض تقديمي': 'fa-presentation',
         'كتاب': 'fa-book',
-        'ملزمة': 'fa-copy'
+        'ملزمة': 'fa-copy',
+        'بوستر': 'fa-image'
     };
-    const statusTexts = { paid: 'مدفوع', unpaid: 'غير مدفوع', partial: 'جزئي' };
+    var statusTexts = { paid: 'مدفوع', unpaid: 'غير مدفوع', partial: 'جزئي' };
     
-    const studyTexts = {
+    var studyTexts = {
         'morning': 'صباحي',
         'evening': 'مسائي',
         'hosting': 'استضافة'
     };
-    const studyIcons = {
+    var studyIcons = {
         'morning': 'fa-sun',
         'evening': 'fa-moon',
         'hosting': 'fa-home'
     };
-    const studyColors = {
+    var studyColors = {
         'morning': '#e65100',
         'evening': '#0d47a1',
         'hosting': '#1b5e20'
     };
-    const studyBgColors = {
+    var studyBgColors = {
         'morning': '#fff3e0',
         'evening': '#e3f2fd',
         'hosting': '#e8f5e9'
     };
     
-    tbody.innerHTML = filtered.map((b, i) => {
-        const studentsHtml = (b.students || []).map(s => `
-            <div style="margin: 3px 0; font-size: 13px; white-space: nowrap;">
-                <i class="fas ${s.paid ? 'fa-check-circle' : 'fa-times-circle'}" 
-                   style="color: ${s.paid ? 'var(--success)' : 'var(--danger)'}; margin-left: 6px; font-size: 12px;">
-                </i>
-                <span>${escapeHtml(s.name)}</span>
-                ${s.isGroupLeader ? ' <small style="color: var(--primary);">(قائد)</small>' : ''}
-            </div>
-        `).join('');
+    var rowsHtml = '';
+    for (var i = 0; i < filtered.length; i++) {
+        var b = filtered[i];
         
-        const studyText = studyTexts[b.studySession] || 'صباحي';
-        const studyIcon = studyIcons[b.studySession] || 'fa-sun';
-        const studyColor = studyColors[b.studySession] || '#e65100';
-        const studyBg = studyBgColors[b.studySession] || '#fff3e0';
+        var studentsHtml = '';
+        var phonesHtml = '';
+        for (var j = 0; j < b.students.length; j++) {
+            var s = b.students[j];
+            studentsHtml += `
+                <div style="margin: 2px 0; font-size: 12px; white-space: nowrap;">
+                    <i class="fas ${s.paid ? 'fa-check-circle' : 'fa-times-circle'}" 
+                       style="color: ${s.paid ? 'var(--success)' : 'var(--danger)'}; margin-left: 5px; font-size: 11px;">
+                    </i>
+                    <span>${escapeHtml(s.name)}</span>
+                    ${s.isGroupLeader ? ' <small style="color: var(--primary);">(قائد)</small>' : ''}
+                </div>
+            `;
+            if (s.phone) {
+                phonesHtml += '<div style="font-size: 11px; direction: ltr; text-align: left;">' + escapeHtml(s.phone) + '</div>';
+            }
+        }
         
-        return `
+        if (!phonesHtml) {
+            phonesHtml = '<span style="color: #999; font-size: 11px;">-</span>';
+        }
+        
+        var studyText = studyTexts[b.studySession] || 'صباحي';
+        var studyIcon = studyIcons[b.studySession] || 'fa-sun';
+        var studyColor = studyColors[b.studySession] || '#e65100';
+        var studyBg = studyBgColors[b.studySession] || '#fff3e0';
+        
+        var classroom = b.classroom || '-';
+        var notes = b.notes || '-';
+        
+        rowsHtml += `
             <tr class="booking-row" data-id="${b.id}">
-                <td>${i + 1}</td>
+                <td style="font-weight: 700;">${i + 1}</td>
                 <td>
                     <i class="fas ${typeIcons[b.type] || 'fa-user'}" title="${typeTexts[b.type] || 'طالب'}"></i>
-                    <span style="margin-right: 5px;">${typeTexts[b.type] || 'طالب'}</span>
+                    <span style="margin-right: 3px;">${typeTexts[b.type] || 'طالب'}</span>
                     <br><small>(${b.totalStudents || 0} طالب)</small>
                 </td>
-                <td style="text-align: right;">${studentsHtml}</td>
+                <td style="text-align: right; min-width: 120px;">${studentsHtml}</td>
+                <td style="text-align: left; direction: ltr; min-width: 80px; font-size: 11px;">${phonesHtml}</td>
                 <td>
-                    <span class="study-badge ${b.studySession || 'morning'}" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 12px; background: ${studyBg}; color: ${studyColor}; border: 1px solid ${studyColor}40; white-space: nowrap;">
-                        <i class="fas ${studyIcon}" style="font-size: 13px;"></i>
+                    <span class="study-badge ${b.studySession || 'morning'}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 16px; font-weight: 600; font-size: 11px; background: ${studyBg}; color: ${studyColor}; border: 1px solid ${studyColor}40; white-space: nowrap;">
+                        <i class="fas ${studyIcon}" style="font-size: 11px;"></i>
                         <span>${studyText}</span>
                     </span>
                 </td>
                 <td>
                     <span class="booking-category">
-                        <i class="fas ${categoryIcons[b.bookingCategory] || 'fa-tag'}" style="color: var(--primary); margin-left: 5px;"></i>
+                        <i class="fas ${categoryIcons[b.bookingCategory] || 'fa-tag'}" style="color: var(--primary); margin-left: 4px;"></i>
                         <span>${escapeHtml(b.bookingCategory || '-')}</span>
                     </span>
-                    ${b.notes ? `<br><small class="booking-notes" title="${escapeHtml(b.notes)}" style="color: #666;">
-                        <i class="fas fa-sticky-note"></i> ${escapeHtml(b.notes)}
-                    </small>` : ''}
                 </td>
-                <td>${escapeHtml(b.college)}</td>
-                <td>${escapeHtml(b.department)}</td>
+                <td style="font-size: 11px; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(b.college)}</td>
+                <td style="font-size: 11px; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(b.department)}</td>
                 <td>${b.stage}</td>
-                <td class="amount-cell">${formatCurrency(b.totalPrice)}</td>
-                <td>${formatCurrency(b.paidAmount)}</td>
-                <td style="color: ${b.remainingAmount > 0 ? 'var(--danger)' : 'var(--success)'}; font-weight: 700;">
+                <td style="font-size: 11px;">${classroom}</td>
+                <td style="font-size: 11px; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(b.notes)}">${notes}</td>
+                <td class="amount-cell" style="font-weight: 600; white-space: nowrap;">${formatCurrency(b.totalPrice)}</td>
+                <td class="amount-cell" style="font-weight: 600; white-space: nowrap;">${formatCurrency(b.paidAmount)}</td>
+                <td style="color: ${b.remainingAmount > 0 ? 'var(--danger)' : 'var(--success)'}; font-weight: 700; white-space: nowrap;">
                     ${formatCurrency(b.remainingAmount)}
                 </td>
                 <td>
@@ -472,33 +491,45 @@ function renderTable() {
                         ${statusTexts[b.paymentStatus] || 'غير معروف'}
                     </span>
                 </td>
-                <td>
+                <td style="font-size: 10px;">
                     <div>${b.dateFormatted}</div>
                     <small style="color: #999;">${b.timeFormatted}</small>
                 </td>
                 <td>
-                    <div class="row-actions">
-                        <button class="btn-icon btn-edit" onclick="editBooking('${b.id}')" title="تعديل">
+                    <div class="row-actions" style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-icon btn-edit" onclick="editBooking('${b.id}')" title="تعديل" style="width: 30px; height: 30px; font-size: 12px;">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn-icon btn-delete" onclick="deleteBooking('${b.id}')" title="حذف">
+                        <button class="btn-icon btn-delete" onclick="deleteBooking('${b.id}')" title="حذف" style="width: 30px; height: 30px; font-size: 12px;">
                             <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn-icon btn-print" onclick="printSingleBooking('${b.id}')" title="طباعة هذا الحجز" style="width: 30px; height: 30px; font-size: 12px; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 6px; cursor: pointer;">
+                            <i class="fas fa-print"></i>
                         </button>
                     </div>
                 </td>
             </tr>
         `;
-    }).join('');
+    }
+    tbody.innerHTML = rowsHtml;
     
-    const totalAll = filtered.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
-    const totalPaid = filtered.reduce((sum, b) => sum + (b.paidAmount || 0), 0);
-    const totalRemaining = totalAll - totalPaid;
-    const totalStudents = filtered.reduce((sum, b) => sum + (b.totalStudents || 0), 0);
+    var totalAll = 0;
+    var totalPaid = 0;
+    var totalStudents = 0;
+    for (var i = 0; i < filtered.length; i++) {
+        var b = filtered[i];
+        totalAll += b.totalPrice || 0;
+        totalPaid += b.paidAmount || 0;
+        totalStudents += b.totalStudents || 0;
+    }
+    var totalRemaining = totalAll - totalPaid;
     
     tfoot.innerHTML = `
         <tr class="table-footer">
-            <td colspan="4"><strong>المجاميع (${filtered.length} حجز - ${totalStudents} طالب)</strong></td>
-            <td colspan="4"><strong>${formatCurrency(totalAll)}</strong></td>
+            <td colspan="9"><strong>المجاميع (${filtered.length} حجز - ${totalStudents} طالب)</strong></td>
+            <td></td>
+            <td></td>
+            <td><strong>${formatCurrency(totalAll)}</strong></td>
             <td><strong>${formatCurrency(totalPaid)}</strong></td>
             <td style="color: ${totalRemaining > 0 ? 'var(--danger)' : 'var(--success)'}; font-weight: 700;">
                 ${formatCurrency(totalRemaining)}
@@ -509,34 +540,38 @@ function renderTable() {
 }
 
 function updateStats() {
-    const filtered = currentFilter === 'all' ? 
+    var filtered = currentFilter === 'all' ? 
         window.bookings : 
-        window.bookings.filter(b => b.paymentStatus === currentFilter);
+        window.bookings.filter(function(b) { return b.paymentStatus === currentFilter; });
+    
+    var totalAmount = 0;
+    var totalPaid = 0;
+    var totalUnpaid = 0;
+    for (var i = 0; i < filtered.length; i++) {
+        var b = filtered[i];
+        totalAmount += b.totalPrice || 0;
+        totalPaid += b.paidAmount || 0;
+        totalUnpaid += (b.totalPrice || 0) - (b.paidAmount || 0);
+    }
     
     document.getElementById('statTotalBookings').textContent = filtered.length;
-    document.getElementById('statTotalAmount').textContent = formatCurrency(
-        filtered.reduce((sum, b) => sum + (b.totalPrice || 0), 0)
-    );
-    document.getElementById('statPaidAmount').textContent = formatCurrency(
-        filtered.reduce((sum, b) => sum + (b.paidAmount || 0), 0)
-    );
-    document.getElementById('statUnpaidAmount').textContent = formatCurrency(
-        filtered.reduce((sum, b) => sum + ((b.totalPrice || 0) - (b.paidAmount || 0)), 0)
-    );
+    document.getElementById('statTotalAmount').textContent = formatCurrency(totalAmount);
+    document.getElementById('statPaidAmount').textContent = formatCurrency(totalPaid);
+    document.getElementById('statUnpaidAmount').textContent = formatCurrency(totalUnpaid);
 }
 
 function deleteBooking(id) {
-    const booking = window.bookings.find(b => b.id === id);
+    var booking = window.bookings.find(function(b) { return b.id === id; });
     if (!booking) return;
     
-    const names = booking.students.map(s => s.name).join('، ');
+    var names = booking.students.map(function(s) { return s.name; }).join('، ');
     
-    if (confirm(`حذف حجز: ${names}؟`)) {
-        window.bookings = window.bookings.filter(b => b.id !== id);
+    if (confirm('حذف حجز: ' + names + '؟')) {
+        window.bookings = window.bookings.filter(function(b) { return b.id !== id; });
         saveBookings();
         
         if (typeof addLog === 'function') {
-            addLog('delete', 'حذف', `تم حذف: ${names}`, booking);
+            addLog('delete', 'حذف', 'تم حذف: ' + names, booking);
         }
         
         renderTable();
@@ -546,10 +581,10 @@ function deleteBooking(id) {
 }
 
 function editBooking(id) {
-    const b = window.bookings.find(b => b.id === id);
+    var b = window.bookings.find(function(booking) { return booking.id === id; });
     if (!b) return;
     
-    const typeRadio = document.querySelector(`input[name="registrationType"][value="${b.type}"]`);
+    var typeRadio = document.querySelector('input[name="registrationType"][value="' + b.type + '"]');
     if (typeRadio) typeRadio.checked = true;
     handleTypeChange();
     
@@ -562,10 +597,10 @@ function editBooking(id) {
     document.getElementById('totalPrice').value = b.totalPrice || 0;
     document.getElementById('paidAmount').value = b.paidAmount || 0;
     
-    const studyRadio = document.querySelector(`input[name="studySession"][value="${b.studySession || 'morning'}"]`);
+    var studyRadio = document.querySelector('input[name="studySession"][value="' + (b.studySession || 'morning') + '"]');
     if (studyRadio) studyRadio.checked = true;
     
-    const paymentRadio = document.querySelector(`input[name="paymentStatus"][value="${b.paymentStatus}"]`);
+    var paymentRadio = document.querySelector('input[name="paymentStatus"][value="' + b.paymentStatus + '"]');
     if (paymentRadio) paymentRadio.checked = true;
     
     if (b.type === 'single') {
@@ -576,17 +611,17 @@ function editBooking(id) {
     } else if (b.type === 'group') {
         fillStudentCard(1, b.students[0]);
         
-        const memberCount = b.students.length - 1;
+        var memberCount = b.students.length - 1;
         document.getElementById('groupSize').value = Math.max(2, memberCount);
         updateGroupMembers();
         
-        setTimeout(() => {
-            for (let i = 1; i < b.students.length; i++) {
-                const memberItem = document.querySelector(`.group-member-item[data-member-index="${i + 1}"]`);
+        setTimeout(function() {
+            for (var i = 1; i < b.students.length; i++) {
+                var memberItem = document.querySelector('.group-member-item[data-member-index="' + (i + 1) + '"]');
                 if (memberItem) {
-                    const nameInput = memberItem.querySelector('.member-name');
-                    const phoneInput = memberItem.querySelector('.member-phone-input');
-                    const paidCheck = memberItem.querySelector('.member-paid');
+                    var nameInput = memberItem.querySelector('.member-name');
+                    var phoneInput = memberItem.querySelector('.member-phone-input');
+                    var paidCheck = memberItem.querySelector('.member-paid');
                     
                     if (nameInput) nameInput.value = b.students[i].name || '';
                     if (phoneInput) phoneInput.value = b.students[i].phone || '';
@@ -596,7 +631,7 @@ function editBooking(id) {
         }, 150);
     }
     
-    window.bookings = window.bookings.filter(booking => booking.id !== id);
+    window.bookings = window.bookings.filter(function(booking) { return booking.id !== id; });
     saveBookings();
     renderTable();
     updateStats();
@@ -607,12 +642,12 @@ function editBooking(id) {
 function fillStudentCard(cardNumber, studentData) {
     if (!studentData) return;
     
-    const card = document.getElementById('studentCard' + cardNumber);
+    var card = document.getElementById('studentCard' + cardNumber);
     if (!card) return;
     
-    const nameInput = card.querySelector('.student-name');
-    const phoneInput = card.querySelector('.student-phone');
-    const paidCheck = card.querySelector('.student-paid');
+    var nameInput = card.querySelector('.student-name');
+    var phoneInput = card.querySelector('.student-phone');
+    var paidCheck = card.querySelector('.student-paid');
     
     if (nameInput) nameInput.value = studentData.name || '';
     if (phoneInput) phoneInput.value = studentData.phone || '';
@@ -620,22 +655,22 @@ function fillStudentCard(cardNumber, studentData) {
 }
 
 function resetForm() {
-    const form = document.getElementById('bookingForm');
+    var form = document.getElementById('bookingForm');
     if (!form) return;
     
     form.reset();
     document.querySelector('input[name="registrationType"][value="single"]').checked = true;
     document.querySelector('input[name="paymentStatus"][value="paid"]').checked = true;
     
-    const groupContainer = document.getElementById('groupMembersContainer');
+    var groupContainer = document.getElementById('groupMembersContainer');
     if (groupContainer) groupContainer.innerHTML = '';
     
-    const groupSize = document.getElementById('groupSize');
+    var groupSize = document.getElementById('groupSize');
     if (groupSize) groupSize.value = '2';
     
     handleTypeChange();
     
-    setTimeout(() => {
+    setTimeout(function() {
         document.getElementById('college')?.focus();
     }, 100);
 }
@@ -646,23 +681,24 @@ function exportToExcel() {
         return;
     }
     
-    const typeTexts = { single: 'طالب', double: 'طالبان', group: 'مجموعة' };
-    const statusTexts = { paid: 'مدفوع', unpaid: 'غير مدفوع', partial: 'جزئي' };
-    const studyTexts = {
+    var typeTexts = { single: 'طالب', double: 'طالبان', group: 'مجموعة' };
+    var statusTexts = { paid: 'مدفوع', unpaid: 'غير مدفوع', partial: 'جزئي' };
+    var studyTexts = {
         'morning': 'صباحي',
         'evening': 'مسائي',
         'hosting': 'استضافة'
     };
     
-    let csv = '\uFEFFالرقم,النوع,الطلاب,عدد الطلاب,الدراسة,نوع الحجز,الكلية,القسم,المرحلة,الشعبة,ملاحظات,السعر,المدفوع,المتبقي,الحالة,التاريخ\n';
+    var csv = '\uFEFFالرقم,النوع,الطلاب,عدد الطلاب,الدراسة,نوع الحجز,الكلية,القسم,المرحلة,الشعبة,ملاحظات,السعر,المدفوع,المتبقي,الحالة,التاريخ\n';
     
-    window.bookings.forEach((b, i) => {
-        const studyText = studyTexts[b.studySession] || 'صباحي';
+    for (var i = 0; i < window.bookings.length; i++) {
+        var b = window.bookings[i];
+        var studyText = studyTexts[b.studySession] || 'صباحي';
         
         csv += [
             i + 1,
             typeTexts[b.type] || '',
-            '"' + b.students.map(s => s.name + (s.paid ? ' (مدفوع)' : ' (غير مدفوع)')).join(' | ') + '"',
+            '"' + b.students.map(function(s) { return s.name + (s.paid ? ' (مدفوع)' : ' (غير مدفوع)'); }).join(' | ') + '"',
             b.totalStudents,
             studyText,
             b.bookingCategory || '-',
@@ -677,10 +713,10 @@ function exportToExcel() {
             statusTexts[b.paymentStatus] || '',
             b.dateFormatted
         ].join(',') + '\n';
-    });
+    }
     
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'الحجوزات_' + new Date().toISOString().split('T')[0] + '.csv';
     link.click();
@@ -698,15 +734,15 @@ function formatCurrency(amount) {
 
 function escapeHtml(text) {
     if (!text) return '';
-    const div = document.createElement('div');
+    var div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
 function updateDateTime() {
-    const now = new Date();
-    const timeEl = document.getElementById('currentTime');
-    const dateEl = document.getElementById('currentDate');
+    var now = new Date();
+    var timeEl = document.getElementById('currentTime');
+    var dateEl = document.getElementById('currentDate');
     
     if (timeEl) {
         timeEl.textContent = now.toLocaleTimeString('ar-IQ', { 
@@ -720,20 +756,21 @@ function updateDateTime() {
     }
 }
 
-function showNotification(message, type = 'success') {
+function showNotification(message, type) {
+    if (type === undefined) type = 'success';
     if (window.notificationsEnabled === false) return;
     
-    const container = document.getElementById('notificationContainer');
+    var container = document.getElementById('notificationContainer');
     if (!container) return;
     
-    const icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle' };
+    var icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle' };
     
-    const div = document.createElement('div');
-    div.className = `notification ${type}`;
-    div.innerHTML = `<i class="fas ${icons[type] || 'fa-info-circle'}"></i> ${escapeHtml(message)}`;
+    var div = document.createElement('div');
+    div.className = 'notification ' + type;
+    div.innerHTML = '<i class="fas ' + (icons[type] || 'fa-info-circle') + '"></i> ' + escapeHtml(message);
     
     container.appendChild(div);
-    setTimeout(() => {
+    setTimeout(function() {
         if (div.parentNode) div.remove();
     }, 4000);
 }
@@ -741,15 +778,19 @@ function showNotification(message, type = 'success') {
 function setupListeners() {
     document.getElementById('bookingForm')?.addEventListener('submit', handleSubmit);
     
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    for (var i = 0; i < filterBtns.length; i++) {
+        filterBtns[i].addEventListener('click', function() {
+            var allBtns = document.querySelectorAll('.filter-btn');
+            for (var j = 0; j < allBtns.length; j++) {
+                allBtns[j].classList.remove('active');
+            }
             this.classList.add('active');
             currentFilter = this.dataset.filter || 'all';
             renderTable();
             updateStats();
         });
-    });
+    }
     
     document.getElementById('searchInput')?.addEventListener('input', function() {
         searchQuery = this.value.trim();
@@ -761,50 +802,50 @@ function setupListeners() {
 }
 
 function autoUpdatePayment() {
-    const total = parseFloat(document.getElementById('totalPrice')?.value) || 0;
-    const paid = parseFloat(document.getElementById('paidAmount')?.value) || 0;
+    var total = parseFloat(document.getElementById('totalPrice')?.value) || 0;
+    var paid = parseFloat(document.getElementById('paidAmount')?.value) || 0;
     
     if (total === 0) {
-        const radio = document.querySelector('input[name="paymentStatus"][value="unpaid"]');
+        var radio = document.querySelector('input[name="paymentStatus"][value="unpaid"]');
         if (radio) radio.checked = true;
     } else if (paid >= total) {
-        const radio = document.querySelector('input[name="paymentStatus"][value="paid"]');
+        var radio = document.querySelector('input[name="paymentStatus"][value="paid"]');
         if (radio) radio.checked = true;
         if (paid > total) document.getElementById('paidAmount').value = total;
     } else if (paid > 0) {
-        const radio = document.querySelector('input[name="paymentStatus"][value="partial"]');
+        var radio = document.querySelector('input[name="paymentStatus"][value="partial"]');
         if (radio) radio.checked = true;
     } else {
-        const radio = document.querySelector('input[name="paymentStatus"][value="unpaid"]');
+        var radio = document.querySelector('input[name="paymentStatus"][value="unpaid"]');
         if (radio) radio.checked = true;
     }
 }
 
 function openLogModal() { 
-    const modal = document.getElementById('logModal');
+    var modal = document.getElementById('logModal');
     if (modal) modal.classList.add('active'); 
     if (typeof renderLogs === 'function') renderLogs(); 
 }
 function closeLogModal() { 
-    const modal = document.getElementById('logModal');
+    var modal = document.getElementById('logModal');
     if (modal) modal.classList.remove('active'); 
 }
 function openSettingsModal() { 
-    const modal = document.getElementById('settingsModal');
+    var modal = document.getElementById('settingsModal');
     if (modal) modal.classList.add('active'); 
     if (typeof renderSettings === 'function') renderSettings(); 
 }
 function closeSettingsModal() { 
-    const modal = document.getElementById('settingsModal');
+    var modal = document.getElementById('settingsModal');
     if (modal) modal.classList.remove('active'); 
 }
 function showDeveloperInfo() { 
-    const modal = document.getElementById('developerModal');
+    var modal = document.getElementById('developerModal');
     if (modal) modal.classList.add('active'); 
     if (typeof renderDeveloperInfo === 'function') renderDeveloperInfo(); 
 }
 function closeDeveloperInfo() { 
-    const modal = document.getElementById('developerModal');
+    var modal = document.getElementById('developerModal');
     if (modal) modal.classList.remove('active'); 
 }
 
@@ -816,71 +857,43 @@ document.addEventListener('click', function(e) {
 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-        document.querySelectorAll('.modal-overlay.active').forEach(function(modal) {
-            modal.classList.remove('active');
-        });
+        var modals = document.querySelectorAll('.modal-overlay.active');
+        for (var i = 0; i < modals.length; i++) {
+            modals[i].classList.remove('active');
+        }
     }
 });
 
+// ==========================================
+// دوال خيارات الطباعة
+// ==========================================
+
 function openPrintOptions() {
-    const modal = document.getElementById('printOptionsModal');
+    var modal = document.getElementById('printOptionsModal');
     if (modal) modal.classList.add('active');
 }
 
 function closePrintOptions() {
-    const modal = document.getElementById('printOptionsModal');
+    var modal = document.getElementById('printOptionsModal');
     if (modal) modal.classList.remove('active');
 }
 
-function printReport(filterType) {
-    closePrintOptions();
-    
-    let dataToPrint = [];
-    let reportTitle = 'تقرير جميع الحجوزات';
-    
-    switch(filterType) {
-        case 'all':
-            dataToPrint = [...window.bookings];
-            reportTitle = 'تقرير جميع الحجوزات';
-            break;
-        case 'paid':
-            dataToPrint = window.bookings.filter(b => b.paymentStatus === 'paid');
-            reportTitle = 'تقرير الحجوزات المدفوعة بالكامل';
-            break;
-        case 'unpaid':
-            dataToPrint = window.bookings.filter(b => b.paymentStatus === 'unpaid');
-            reportTitle = 'تقرير الحجوزات غير المدفوعة';
-            break;
-        case 'partial':
-            dataToPrint = window.bookings.filter(b => b.paymentStatus === 'partial');
-            reportTitle = 'تقرير الحجوزات المدفوعة جزئياً';
-            break;
-        case 'filtered':
-            let filterValue = currentFilter;
-            if (filterValue === 'all') {
-                dataToPrint = [...window.bookings];
-                reportTitle = 'تقرير جميع الحجوزات (حسب الفلتر)';
-            } else {
-                dataToPrint = window.bookings.filter(b => b.paymentStatus === filterValue);
-                const statusNames = { paid: 'المدفوعة بالكامل', unpaid: 'غير المدفوعة', partial: 'المدفوعة جزئياً' };
-                reportTitle = `تقرير الحجوزات ${statusNames[filterValue] || ''}`;
-            }
-            break;
-        default:
-            dataToPrint = [...window.bookings];
-            reportTitle = 'تقرير جميع الحجوزات';
-    }
-    
-    dataToPrint.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    if (dataToPrint.length === 0) {
-        showNotification('لا توجد بيانات للطباعة', 'warning');
+// ==========================================
+// طباعة حجز واحد محدد
+// ==========================================
+
+function printSingleBooking(bookingId) {
+    var booking = window.bookings.find(function(b) { return b.id === bookingId; });
+    if (!booking) {
+        showNotification('الحجز غير موجود', 'error');
         return;
     }
     
-    const printContent = generatePrintContent(dataToPrint, reportTitle);
+    var studentsNames = booking.students.map(function(s) { return s.name; }).join('، ');
+    var reportTitle = 'تقرير حجز: ' + studentsNames;
+    var printContent = generatePrintContent([booking], reportTitle);
     
-    const printWindow = window.open('', '_blank', 'width=1200,height=800');
+    var printWindow = window.open('', '_blank', 'width=1200,height=800');
     if (!printWindow) {
         showNotification('الرجاء السماح بالنوافذ المنبثقة', 'error');
         return;
@@ -896,121 +909,142 @@ function printReport(filterType) {
     };
 }
 
+// ==========================================
+// طباعة التقرير العام
+// ==========================================
+
+function printReport(filterType) {
+    closePrintOptions();
+    
+    var dataToPrint = [];
+    var reportTitle = 'تقرير جميع الحجوزات';
+    
+    switch(filterType) {
+        case 'all':
+            dataToPrint = window.bookings.slice();
+            reportTitle = 'تقرير جميع الحجوزات';
+            break;
+        case 'paid':
+            dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === 'paid'; });
+            reportTitle = 'تقرير الحجوزات المدفوعة بالكامل';
+            break;
+        case 'unpaid':
+            dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === 'unpaid'; });
+            reportTitle = 'تقرير الحجوزات غير المدفوعة';
+            break;
+        case 'partial':
+            dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === 'partial'; });
+            reportTitle = 'تقرير الحجوزات المدفوعة جزئياً';
+            break;
+        case 'filtered':
+            var filterValue = currentFilter;
+            if (filterValue === 'all') {
+                dataToPrint = window.bookings.slice();
+                reportTitle = 'تقرير جميع الحجوزات (حسب الفلتر)';
+            } else {
+                dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === filterValue; });
+                var statusNames = { paid: 'المدفوعة بالكامل', unpaid: 'غير المدفوعة', partial: 'المدفوعة جزئياً' };
+                reportTitle = 'تقرير الحجوزات ' + (statusNames[filterValue] || '');
+            }
+            break;
+        default:
+            dataToPrint = window.bookings.slice();
+            reportTitle = 'تقرير جميع الحجوزات';
+    }
+    
+    dataToPrint.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+    
+    if (dataToPrint.length === 0) {
+        showNotification('لا توجد بيانات للطباعة', 'warning');
+        return;
+    }
+    
+    var printContent = generatePrintContent(dataToPrint, reportTitle);
+    
+    var printWindow = window.open('', '_blank', 'width=1200,height=800');
+    if (!printWindow) {
+        showNotification('الرجاء السماح بالنوافذ المنبثقة', 'error');
+        return;
+    }
+    
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    printWindow.onload = function() {
+        setTimeout(function() {
+            printWindow.print();
+        }, 500);
+    };
+}
+
+// ==========================================
+// إنشاء محتوى الطباعة
+// ==========================================
+
 function generatePrintContent(data, title) {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('ar-IQ', {
+    var now = new Date();
+    var dateStr = now.toLocaleDateString('ar-IQ', {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
-    const timeStr = now.toLocaleTimeString('ar-IQ', {
+    var timeStr = now.toLocaleTimeString('ar-IQ', {
         hour: '2-digit',
         minute: '2-digit'
     });
     
-    const typeTexts = { single: 'طالب', double: 'طالبان', group: 'مجموعة' };
-    const statusTexts = { paid: 'مدفوع', unpaid: 'غير مدفوع', partial: 'مدفوع جزئياً' };
-    const studyTexts = {
+    var typeTexts = { single: 'طالب', double: 'طالبان', group: 'مجموعة' };
+    var statusTexts = { paid: 'مدفوع', unpaid: 'غير مدفوع', partial: 'مدفوع جزئياً' };
+    var studyTexts = {
         'morning': 'صباحي',
         'evening': 'مسائي',
         'hosting': 'استضافة'
     };
     
-    let rowsHtml = '';
-    let totalAll = 0;
-    let totalPaid = 0;
-    let totalStudents = 0;
+    var rowsHtml = '';
+    var totalAll = 0;
+    var totalPaid = 0;
+    var totalStudents = 0;
     
-    let maxStudentsLength = 0;
-    let maxCollegeLength = 0;
-    let maxDeptLength = 0;
-    let maxCategoryLength = 0;
-    let maxStageLength = 0;
-    let maxDateLength = 0;
-    
-    data.forEach(function(b) {
-        let studentsText = '';
-        b.students.forEach(function(s) {
-            let name = s.name || '';
-            if (s.isGroupLeader) {
-                name = name + ' (مسؤول)';
-            }
-            const mark = s.paid ? '✓' : '✗';
-            name = mark + ' ' + name;
-            studentsText += name + ' ';
-        });
-        if (studentsText.length > maxStudentsLength) {
-            maxStudentsLength = studentsText.length;
-        }
+    for (var i = 0; i < data.length; i++) {
+        var b = data[i];
+        var studentsList = [];
+        var phonesList = [];
         
-        if ((b.college || '').length > maxCollegeLength) {
-            maxCollegeLength = (b.college || '').length;
-        }
-        if ((b.department || '').length > maxDeptLength) {
-            maxDeptLength = (b.department || '').length;
-        }
-        if ((b.bookingCategory || '').length > maxCategoryLength) {
-            maxCategoryLength = (b.bookingCategory || '').length;
-        }
-        if ((b.stage || '').length > maxStageLength) {
-            maxStageLength = (b.stage || '').length;
-        }
-        if ((b.dateFormatted || '').length > maxDateLength) {
-            maxDateLength = (b.dateFormatted || '').length;
-        }
-    });
-    
-    const totalChars = maxStudentsLength + maxCollegeLength + maxDeptLength + 
-                       maxCategoryLength + maxStageLength + maxDateLength + 50;
-    
-    let studentsPercent = Math.max(18, Math.min(28, (maxStudentsLength / totalChars) * 100));
-    let collegePercent = Math.max(6, Math.min(12, (maxCollegeLength / totalChars) * 100));
-    let deptPercent = Math.max(6, Math.min(12, (maxDeptLength / totalChars) * 100));
-    let categoryPercent = Math.max(5, Math.min(10, (maxCategoryLength / totalChars) * 100));
-    let stagePercent = Math.max(4, Math.min(8, (maxStageLength / totalChars) * 100));
-    let datePercent = Math.max(7, Math.min(12, (maxDateLength / totalChars) * 100));
-    
-    const fixedColumnsWidth = 22 + 38 + 38 + 42 + 42 + 42 + 42;
-    const totalFixedPercent = (fixedColumnsWidth / 900) * 100;
-    const totalDynamicPercent = studentsPercent + collegePercent + deptPercent + categoryPercent + stagePercent + datePercent;
-    
-    const maxDynamicPercent = 100 - totalFixedPercent - 5; 
-    if (totalDynamicPercent > maxDynamicPercent) {
-        const scaleFactor = maxDynamicPercent / totalDynamicPercent;
-        studentsPercent = studentsPercent * scaleFactor;
-        collegePercent = collegePercent * scaleFactor;
-        deptPercent = deptPercent * scaleFactor;
-        categoryPercent = categoryPercent * scaleFactor;
-        stagePercent = stagePercent * scaleFactor;
-        datePercent = datePercent * scaleFactor;
-    }
-    
-    data.forEach(function(b, i) {
-        let studentsList = [];
-        b.students.forEach(function(s) {
-            let name = s.name || '';
+        for (var j = 0; j < b.students.length; j++) {
+            var s = b.students[j];
+            var name = s.name || '';
             if (s.isGroupLeader) {
                 name = name + ' (مسؤول)';
             }
-            const mark = s.paid ? '✓' : '✗';
+            var mark = s.paid ? '✓' : '✗';
             name = mark + ' ' + name;
             studentsList.push(name);
-        });
+            if (s.phone) {
+                phonesList.push(s.phone);
+            }
+        }
         
-        const studentsNames = studentsList.join('<br>');
-        const studyText = studyTexts[b.studySession] || 'صباحي';
+        var studentsNames = studentsList.join('<br>');
+        var phones = phonesList.length > 0 ? phonesList.join('، ') : '-';
+        var studyText = studyTexts[b.studySession] || 'صباحي';
+        var classroom = b.classroom || '-';
+        var notes = b.notes || '-';
         
         rowsHtml += `
             <tr>
                 <td>${i + 1}</td>
                 <td>${typeTexts[b.type] || ''}</td>
                 <td class="students-cell">${studentsNames}</td>
+                <td class="phone-cell">${phones}</td>
                 <td>${studyText}</td>
                 <td>${b.bookingCategory || '-'}</td>
                 <td class="college-cell">${b.college || ''}</td>
                 <td class="dept-cell">${b.department || ''}</td>
                 <td>${b.stage || ''}</td>
+                <td class="classroom-cell">${classroom}</td>
+                <td class="notes-cell">${notes}</td>
                 <td class="amount-cell">${b.totalPrice.toLocaleString('ar-IQ')}</td>
                 <td class="amount-cell">${b.paidAmount.toLocaleString('ar-IQ')}</td>
                 <td class="amount-cell remaining">${b.remainingAmount.toLocaleString('ar-IQ')}</td>
@@ -1022,9 +1056,9 @@ function generatePrintContent(data, title) {
         totalAll += b.totalPrice || 0;
         totalPaid += b.paidAmount || 0;
         totalStudents += b.totalStudents || 0;
-    });
+    }
     
-    const totalRemaining = totalAll - totalPaid;
+    var totalRemaining = totalAll - totalPaid;
     
     return `<!DOCTYPE html>
     <html dir="rtl">
@@ -1042,22 +1076,22 @@ function generatePrintContent(data, title) {
             
             body {
                 font-family: 'Cairo', 'Arial', sans-serif;
-                padding: 6px 4px;
+                padding: 5px 3px;
                 color: #1a1a2e;
                 background: white;
-                font-size: 8.5px;
+                font-size: 7.5px;
                 direction: rtl;
             }
             
             .print-header {
                 text-align: center;
-                padding: 5px 0;
+                padding: 4px 0;
                 border-bottom: 2px solid #1a237e;
-                margin-bottom: 6px;
+                margin-bottom: 5px;
             }
             .print-header h1 {
                 color: #1a237e;
-                font-size: 14px;
+                font-size: 13px;
                 margin-bottom: 1px;
             }
             .print-header h1 i {
@@ -1066,11 +1100,11 @@ function generatePrintContent(data, title) {
             }
             .print-header .subtitle {
                 color: #555;
-                font-size: 8.5px;
+                font-size: 7.5px;
             }
             .print-header .datetime {
                 color: #777;
-                font-size: 8px;
+                font-size: 7px;
                 margin-top: 2px;
             }
             .print-header .datetime i {
@@ -1079,11 +1113,11 @@ function generatePrintContent(data, title) {
             
             .print-title {
                 text-align: center;
-                font-size: 11px;
+                font-size: 10px;
                 font-weight: 700;
                 color: #1a237e;
-                margin: 5px 0 6px;
-                padding: 4px;
+                margin: 4px 0 5px;
+                padding: 3px;
                 background: #f0f4ff;
                 border-radius: 4px;
             }
@@ -1095,7 +1129,7 @@ function generatePrintContent(data, title) {
             table {
                 width: 100%;
                 border-collapse: collapse;
-                font-size: 8px;
+                font-size: 7px;
                 direction: rtl;
                 table-layout: auto;
             }
@@ -1103,108 +1137,47 @@ function generatePrintContent(data, title) {
             th {
                 background: #1a237e;
                 color: white;
-                padding: 3px 3px;
+                padding: 2px 2px;
                 font-weight: 700;
                 text-align: center;
                 border: 1px solid #1a237e;
-                font-size: 7.5px;
+                font-size: 6.5px;
                 white-space: nowrap;
             }
             
             td {
-                padding: 2px 3px;
+                padding: 2px 2px;
                 border: 1px solid #ddd;
                 text-align: center;
                 vertical-align: middle;
                 word-wrap: break-word;
                 overflow-wrap: break-word;
-                font-size: 8px;
+                font-size: 7px;
             }
             
-            th:nth-child(1), td:nth-child(1) { 
-                width: 20px; 
-                min-width: 18px; 
-                max-width: 25px; 
-            }
-            
-            th:nth-child(2), td:nth-child(2) { 
-                width: 32px; 
-                min-width: 30px; 
-                max-width: 40px; 
-            }
-            
-            th:nth-child(3), td:nth-child(3) { 
-                width: ${Math.min(studentsPercent, 25)}%; 
-                min-width: 100px; 
-                max-width: 200px; 
-            }
-            
-            th:nth-child(4), td:nth-child(4) { 
-                width: 32px; 
-                min-width: 30px; 
-                max-width: 40px; 
-            }
-            
-            th:nth-child(5), td:nth-child(5) { 
-                width: ${Math.min(categoryPercent, 8)}%; 
-                min-width: 35px; 
-                max-width: 60px; 
-            }
-            
-            th:nth-child(6), td:nth-child(6) { 
-                width: ${Math.min(collegePercent, 10)}%; 
-                min-width: 40px; 
-                max-width: 75px; 
-            }
-            
-            th:nth-child(7), td:nth-child(7) { 
-                width: ${Math.min(deptPercent, 10)}%; 
-                min-width: 40px; 
-                max-width: 75px; 
-            }
-            
-            th:nth-child(8), td:nth-child(8) { 
-                width: ${Math.min(stagePercent, 6)}%; 
-                min-width: 28px; 
-                max-width: 42px; 
-            }
-            
-            th:nth-child(9), td:nth-child(9) { 
-                width: 38px; 
-                min-width: 35px; 
-                max-width: 45px; 
-            }
-            
-            th:nth-child(10), td:nth-child(10) { 
-                width: 38px; 
-                min-width: 35px; 
-                max-width: 45px; 
-            }
-            
-            th:nth-child(11), td:nth-child(11) { 
-                width: 38px; 
-                min-width: 35px; 
-                max-width: 45px; 
-            }
-            
-            th:nth-child(12), td:nth-child(12) { 
-                width: 38px; 
-                min-width: 35px; 
-                max-width: 48px; 
-            }
-            
-            th:nth-child(13), td:nth-child(13) { 
-                width: ${Math.min(datePercent, 10)}%; 
-                min-width: 50px; 
-                max-width: 80px; 
-            }
+            th:nth-child(1), td:nth-child(1) { width: 18px; min-width: 15px; max-width: 22px; }
+            th:nth-child(2), td:nth-child(2) { width: 28px; min-width: 25px; max-width: 35px; }
+            th:nth-child(3), td:nth-child(3) { width: 18%; min-width: 80px; max-width: 160px; }
+            th:nth-child(4), td:nth-child(4) { width: 8%; min-width: 35px; max-width: 60px; }
+            th:nth-child(5), td:nth-child(5) { width: 28px; min-width: 25px; max-width: 35px; }
+            th:nth-child(6), td:nth-child(6) { width: 7%; min-width: 30px; max-width: 50px; }
+            th:nth-child(7), td:nth-child(7) { width: 8%; min-width: 35px; max-width: 65px; }
+            th:nth-child(8), td:nth-child(8) { width: 8%; min-width: 35px; max-width: 65px; }
+            th:nth-child(9), td:nth-child(9) { width: 5%; min-width: 25px; max-width: 38px; }
+            th:nth-child(10), td:nth-child(10) { width: 5%; min-width: 25px; max-width: 38px; }
+            th:nth-child(11), td:nth-child(11) { width: 7%; min-width: 30px; max-width: 55px; }
+            th:nth-child(12), td:nth-child(12) { width: 34px; min-width: 30px; max-width: 40px; }
+            th:nth-child(13), td:nth-child(13) { width: 34px; min-width: 30px; max-width: 40px; }
+            th:nth-child(14), td:nth-child(14) { width: 34px; min-width: 30px; max-width: 40px; }
+            th:nth-child(15), td:nth-child(15) { width: 34px; min-width: 30px; max-width: 42px; }
+            th:nth-child(16), td:nth-child(16) { width: 9%; min-width: 45px; max-width: 70px; }
             
             td.students-cell {
                 text-align: right !important;
                 direction: ltr !important;
-                font-size: 8.5px !important;
-                line-height: 1.7 !important;
-                padding: 2px 6px !important;
+                font-size: 7.5px !important;
+                line-height: 1.6 !important;
+                padding: 2px 4px !important;
                 font-weight: 600;
                 color: #1a1a2e;
                 word-wrap: break-word;
@@ -1218,13 +1191,28 @@ function generatePrintContent(data, title) {
                 margin: 0px 0;
             }
             
+            td.phone-cell {
+                font-size: 7px !important;
+                direction: ltr !important;
+                text-align: left !important;
+                white-space: nowrap;
+            }
+            
+            td.classroom-cell, td.notes-cell {
+                font-size: 6.5px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 55px;
+            }
+            
             td.amount-cell {
                 font-weight: 600;
-                font-size: 8px;
+                font-size: 7px;
                 text-align: left !important;
                 direction: ltr !important;
                 white-space: nowrap;
-                padding-left: 3px !important;
+                padding-left: 2px !important;
             }
             
             td.remaining {
@@ -1233,16 +1221,16 @@ function generatePrintContent(data, title) {
             }
             
             td.date-cell {
-                font-size: 7.5px !important;
+                font-size: 6.5px !important;
                 line-height: 1.2 !important;
                 white-space: normal !important;
                 word-wrap: break-word !important;
                 overflow-wrap: break-word !important;
-                padding: 2px 3px !important;
+                padding: 2px 2px !important;
             }
             
             td.college-cell, td.dept-cell {
-                font-size: 7.5px;
+                font-size: 6.5px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -1256,7 +1244,7 @@ function generatePrintContent(data, title) {
                 display: inline-block;
                 padding: 1px 4px;
                 border-radius: 8px;
-                font-size: 6.5px;
+                font-size: 5.5px;
                 font-weight: 700;
                 white-space: nowrap;
             }
@@ -1283,17 +1271,17 @@ function generatePrintContent(data, title) {
             .total-row td {
                 border-color: #1a237e;
                 border-top: 2px solid #1a237e;
-                padding: 3px 3px;
-                font-size: 8px;
+                padding: 2px 2px;
+                font-size: 7px;
             }
             
             .print-footer {
-                margin-top: 6px;
-                padding-top: 5px;
+                margin-top: 5px;
+                padding-top: 4px;
                 border-top: 2px solid #ddd;
                 display: flex;
                 justify-content: space-between;
-                font-size: 7.5px;
+                font-size: 6.5px;
                 color: #555;
             }
             .print-footer i {
@@ -1302,8 +1290,8 @@ function generatePrintContent(data, title) {
 
             @media print {
                 body {
-                    padding: 3px 2px;
-                    font-size: 7px;
+                    padding: 2px 1.5px;
+                    font-size: 6.5px;
                 }
                 .no-print {
                     display: none;
@@ -1329,67 +1317,23 @@ function generatePrintContent(data, title) {
                     print-color-adjust: exact !important;
                 }
                 td.students-cell {
-                    font-size: 7.5px !important;
-                    line-height: 1.5 !important;
+                    font-size: 6.5px !important;
+                    line-height: 1.4 !important;
                 }
                 .print-header h1 {
-                    font-size: 12px;
+                    font-size: 11px;
                 }
                 .print-title {
-                    font-size: 9px;
-                    padding: 3px;
+                    font-size: 8px;
+                    padding: 2px;
                 }
                 th {
-                    font-size: 6.5px !important;
-                    padding: 2px 2px !important;
+                    font-size: 5.5px !important;
+                    padding: 1.5px 1.5px !important;
                 }
                 td {
-                    font-size: 7px !important;
-                    padding: 1.5px 2px !important;
-                }
-                td.amount-cell {
-                    font-size: 7px !important;
-                }
-                td.date-cell {
-                    font-size: 6.5px !important;
-                }
-                .status-badge {
-                    font-size: 5.5px !important;
-                    padding: 1px 3px !important;
-                }
-                .print-footer {
-                    font-size: 6.5px !important;
-                }
-                .total-row td {
-                    font-size: 7px !important;
-                }
-                tr {
-                    page-break-inside: avoid;
-                    break-inside: avoid;
-                }
-                th:nth-child(3), td:nth-child(3) { max-width: 160px; }
-                th:nth-child(6), td:nth-child(6) { max-width: 60px; }
-                th:nth-child(7), td:nth-child(7) { max-width: 60px; }
-                th:nth-child(13), td:nth-child(13) { max-width: 65px; }
-            }
-            
-            @page {
-                size: A4 portrait;
-                margin: 3mm 2mm;
-            }
-            
-            @media screen and (max-width: 900px) {
-                body {
-                    padding: 3px 2px;
-                    font-size: 6.5px;
-                }
-                th, td {
-                    font-size: 6px;
-                    padding: 1.5px 1.5px;
-                }
-                td.students-cell {
-                    font-size: 6.5px !important;
-                    line-height: 1.3 !important;
+                    font-size: 6px !important;
+                    padding: 1px 1.5px !important;
                 }
                 td.amount-cell {
                     font-size: 6px !important;
@@ -1397,15 +1341,67 @@ function generatePrintContent(data, title) {
                 td.date-cell {
                     font-size: 5.5px !important;
                 }
+                td.phone-cell {
+                    font-size: 6px !important;
+                }
+                td.classroom-cell, td.notes-cell {
+                    font-size: 5.5px !important;
+                }
                 .status-badge {
-                    font-size: 5px;
+                    font-size: 5px !important;
+                    padding: 1px 2px !important;
+                }
+                .print-footer {
+                    font-size: 5.5px !important;
+                }
+                .total-row td {
+                    font-size: 6px !important;
+                }
+                tr {
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
+                th:nth-child(3), td:nth-child(3) { max-width: 130px; }
+                th:nth-child(4), td:nth-child(4) { max-width: 50px; }
+                th:nth-child(7), td:nth-child(7) { max-width: 50px; }
+                th:nth-child(8), td:nth-child(8) { max-width: 50px; }
+                th:nth-child(11), td:nth-child(11) { max-width: 45px; }
+                th:nth-child(16), td:nth-child(16) { max-width: 55px; }
+            }
+            
+            @page {
+                size: A4 landscape;
+                margin: 3mm 2mm;
+            }
+            
+            @media screen and (max-width: 900px) {
+                body {
+                    padding: 2px 1.5px;
+                    font-size: 6px;
+                }
+                th, td {
+                    font-size: 5.5px;
+                    padding: 1px 1px;
+                }
+                td.students-cell {
+                    font-size: 6px !important;
+                    line-height: 1.3 !important;
+                }
+                td.amount-cell {
+                    font-size: 5.5px !important;
+                }
+                td.date-cell {
+                    font-size: 5px !important;
+                }
+                .status-badge {
+                    font-size: 4.5px;
                     padding: 1px 2px;
                 }
                 .print-header h1 {
-                    font-size: 11px;
+                    font-size: 10px;
                 }
                 .print-title {
-                    font-size: 8px;
+                    font-size: 7px;
                 }
             }
         </style>
@@ -1425,11 +1421,14 @@ function generatePrintContent(data, title) {
                     <th>ت</th>
                     <th>النوع</th>
                     <th>الطلاب</th>
+                    <th>الهاتف</th>
                     <th>الدراسة</th>
                     <th>نوع الحجز</th>
                     <th>الكلية</th>
                     <th>القسم</th>
                     <th>المرحلة</th>
+                    <th>القاعة</th>
+                    <th>ملاحظات</th>
                     <th>السعر</th>
                     <th>المدفوع</th>
                     <th>المتبقي</th>
@@ -1440,13 +1439,14 @@ function generatePrintContent(data, title) {
             <tbody>
                 ${rowsHtml}
                 <tr class="total-row">
-                    <td colspan="7" style="text-align: right; font-size: 8px; padding-right: 4px;">
+                    <td colspan="9" style="text-align: right; font-size: 7px; padding-right: 4px;">
                         <strong><i class="fas fa-calculator"></i> المجموع (${data.length} حجز — ${totalStudents} طالب)</strong>
                     </td>
-                    <td style="text-align: center;"></td>
-                    <td style="text-align: left; font-weight: 700; direction: ltr; font-size: 7.5px;">${totalAll.toLocaleString('ar-IQ')}</td>
-                    <td style="text-align: left; font-weight: 700; direction: ltr; font-size: 7.5px;">${totalPaid.toLocaleString('ar-IQ')}</td>
-                    <td style="text-align: left; font-weight: 700; color: ${totalRemaining > 0 ? '#c62828' : '#2e7d32'}; direction: ltr; font-size: 7.5px;">
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: left; font-weight: 700; direction: ltr; font-size: 6.5px;">${totalAll.toLocaleString('ar-IQ')}</td>
+                    <td style="text-align: left; font-weight: 700; direction: ltr; font-size: 6.5px;">${totalPaid.toLocaleString('ar-IQ')}</td>
+                    <td style="text-align: left; font-weight: 700; color: ${totalRemaining > 0 ? '#c62828' : '#2e7d32'}; direction: ltr; font-size: 6.5px;">
                         ${totalRemaining.toLocaleString('ar-IQ')}
                     </td>
                     <td colspan="2"></td>
@@ -1461,3 +1461,108 @@ function generatePrintContent(data, title) {
     </body>
     </html>`;
 }
+
+(function() {
+    'use strict';
+    
+    function isMobileDevice() {
+        return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    }
+    
+    function printMobile(printContent) {
+        var printDiv = document.createElement('div');
+        printDiv.style.position = 'fixed';
+        printDiv.style.top = '0';
+        printDiv.style.left = '0';
+        printDiv.style.width = '100%';
+        printDiv.style.height = '100%';
+        printDiv.style.zIndex = '99999';
+        printDiv.style.background = 'white';
+        printDiv.style.overflow = 'auto';
+        printDiv.style.padding = '10px';
+        printDiv.style.direction = 'rtl';
+        printDiv.innerHTML = printContent;
+        document.body.appendChild(printDiv);
+        
+        setTimeout(function() {
+            window.print();
+            setTimeout(function() {
+                if (printDiv.parentNode) {
+                    printDiv.parentNode.removeChild(printDiv);
+                }
+            }, 1000);
+        }, 300);
+    }
+    
+    function printMobileReport(filterType) {
+        closePrintOptions();
+        
+        var dataToPrint = [];
+        var reportTitle = 'تقرير جميع الحجوزات';
+        
+        switch(filterType) {
+            case 'all':
+                dataToPrint = window.bookings.slice();
+                reportTitle = 'تقرير جميع الحجوزات';
+                break;
+            case 'paid':
+                dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === 'paid'; });
+                reportTitle = 'تقرير الحجوزات المدفوعة بالكامل';
+                break;
+            case 'unpaid':
+                dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === 'unpaid'; });
+                reportTitle = 'تقرير الحجوزات غير المدفوعة';
+                break;
+            case 'partial':
+                dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === 'partial'; });
+                reportTitle = 'تقرير الحجوزات المدفوعة جزئياً';
+                break;
+            case 'filtered':
+                var filterValue = currentFilter;
+                if (filterValue === 'all') {
+                    dataToPrint = window.bookings.slice();
+                    reportTitle = 'تقرير جميع الحجوزات (حسب الفلتر)';
+                } else {
+                    dataToPrint = window.bookings.filter(function(b) { return b.paymentStatus === filterValue; });
+                    var statusNames = { paid: 'المدفوعة بالكامل', unpaid: 'غير المدفوعة', partial: 'المدفوعة جزئياً' };
+                    reportTitle = 'تقرير الحجوزات ' + (statusNames[filterValue] || '');
+                }
+                break;
+            default:
+                dataToPrint = window.bookings.slice();
+                reportTitle = 'تقرير جميع الحجوزات';
+        }
+        
+        dataToPrint.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+        
+        if (dataToPrint.length === 0) {
+            showNotification('لا توجد بيانات للطباعة', 'warning');
+            return;
+        }
+        
+        var printContent = generatePrintContent(dataToPrint, reportTitle);
+        printMobile(printContent);
+    }
+    
+    if (isMobileDevice()) {
+        window.printReport = function(filterType) {
+            closePrintOptions();
+            printMobileReport(filterType);
+        };
+        
+        window.printSingleBooking = function(bookingId) {
+            var booking = window.bookings.find(function(b) { return b.id === bookingId; });
+            if (!booking) {
+                showNotification('الحجز غير موجود', 'error');
+                return;
+            }
+            
+            var studentsNames = booking.students.map(function(s) { return s.name; }).join('، ');
+            var reportTitle = 'تقرير حجز: ' + studentsNames;
+            var printContent = generatePrintContent([booking], reportTitle);
+            printMobile(printContent);
+        };
+        
+        console.log('أنت تستخدم الهاتف حالياً');
+    }
+})();
